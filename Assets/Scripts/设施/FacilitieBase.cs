@@ -9,7 +9,7 @@ public  abstract class FacilitieBase : MonoBehaviour
 
 
     #region
-    protected void OnMouseDown()
+    protected void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -35,11 +35,11 @@ public  abstract class FacilitieBase : MonoBehaviour
     }
     protected virtual void OnMouseButtonDown_1()
     {
-
+        Debug.Log("鼠标按下1");
     }
     protected virtual void OnMouseButtonDown_2()
     {
-
+        Debug.Log("鼠标按下2");
     }
     #endregion
 
