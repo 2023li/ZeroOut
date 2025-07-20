@@ -35,14 +35,20 @@ public class HexGridGenerator : MonoBehaviour
         
         
     }
-    void Start()
-    {
-        GenerateHexGrid();
-    }
+  
 
     [Button]
-    public void GenerateHexGrid()
+    public void GenerateHexGrid(int r = -1)
     {
+
+        if (r<1)
+        {
+            r = gridRadius;
+        }else
+        {
+            gridRadius = r;
+        }
+
         // Çå³ý¾ÉÍø¸ñ
         ClearGrid();
 

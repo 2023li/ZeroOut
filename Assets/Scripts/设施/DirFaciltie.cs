@@ -15,6 +15,9 @@ public enum Faciltie_Dir
     右下,
 }
 
+/// <summary>
+/// 带方向的炮塔
+/// </summary>
 public abstract class DirFaciltie : FacilitieBase
 {
 

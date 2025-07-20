@@ -51,6 +51,7 @@ public class DFA_FenLieQi : DirFaciltie
 
 
 
+
     HashSet<GameObject> ignoreGO;
 
     //

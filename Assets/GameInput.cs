@@ -43,7 +43,9 @@ public class GameInput : MonoBehaviour
     void Update()
     {
         HandleZoomInput();
-        //HandleDragInput();
+        HandleDragInput();
+
+      
     }
 
     void LateUpdate()
@@ -89,36 +91,17 @@ public class GameInput : MonoBehaviour
 
     private void HandleDragInput()
     {
-        // Êó±ê×ó¼ü°´ÏÂ¿ªÊ¼ÍÏ×§
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) // ÓÒ¼ü¿ªÊ¼ÍÏ×§
         {
-            dragOrigin = GetMouseWorldPosition();
-            isDragging = true;
+            dragOrigin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
-        // Êó±ê×ó¼üÌ§ÆðÍ£Ö¹ÍÏ×§
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButton(0)) // ÓÒ¼ü³ÖÐøÍÏ×§
         {
-            isDragging = false;
-        }
-
-        if (isDragging)
-        {
-            Vector3 currentMousePos = GetMouseWorldPosition();
-            Vector3 difference = dragOrigin - currentMousePos;
-            
-            // ºöÂÔZÖá²îÒì
-            difference.z = 0;
-            
-            // Ó¦ÓÃÍÏ×§ÒÆ¶¯
-            if (invertDrag)
-            {
-                transform.position += difference * dragSpeed;
-            }
-            else
-            {
-                transform.position -= difference * dragSpeed;
-            }
+            Debug.Log(1);
+            Vector3 currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 dragDelta = dragOrigin - currentPosition;
+            transform.position += new Vector3(dragDelta.x, dragDelta.y, 0) * dragSpeed;
         }
     }
 

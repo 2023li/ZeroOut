@@ -3,9 +3,21 @@ using Lean.Pool;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+
 public class TheGame : MonoBehaviour
 {
 
+    [LabelText("实际地图半径")]
+    public int MapRadius = 24;
+    [LabelText("可用半径")]
+    public int UnusableRadius = 12;
+    [LabelText("待解锁半径")]
+    public int lockRadius = 7;
+    [LabelText("已解锁半径")]
+    public int unlockRadius = 6;
+
+
+    [LabelText("开始刷怪")]
     public bool start = false;
     public int runSeconds = 0;
     public float time;
@@ -17,11 +29,16 @@ public class TheGame : MonoBehaviour
 
     public GameObject prefab_Enemy;
 
-    public static TheGame Instance {  get; private set; }
+    public static TheGame Instance { get; private set; }
 
+    //
     [ShowInInspector]
-    public  Dictionary<Vector3Int,Vector3> enemySpawnPoint;
+    public Dictionary<Vector3Int, Vector3> dicCellPosToWorldPos;
 
+
+    //最外层的六边形(默认随机刷怪用)
+    [ShowInInspector]
+    List<Vector3Int> outerRing = new List<Vector3Int>();
 
     private void Awake()
     {
@@ -38,7 +55,9 @@ public class TheGame : MonoBehaviour
     void Start()
     {
 
-      Assets.Init();
+        Assets.Init();
+
+        TheGameInit();
 
     }
 
@@ -49,67 +68,72 @@ public class TheGame : MonoBehaviour
         {
 
             time += Time.deltaTime;
-            if (time >= 1) 
+            if (time >= 1)
             {
                 runSeconds++;
-                time = 0;   
+                time = 0;
             }
 
-
-
             SpawnCD -= Time.deltaTime;
-            if(SpawnCD < 0)
+            if (SpawnCD < 0)
             {
-                SpawnEnemy();
+                SpawnEnemy(outerRing[UnityEngine.Random.Range(0, outerRing.Count)]);
                 SpawnCD = SetSpawnCD();
 
             }
-
-
-
-
         }
 
 
     }
-
     [Button]
-    private void GetEnemySpawnPoint()
+    public void TheGameInit()
     {
-        enemySpawnPoint = new Dictionary<Vector3Int,Vector3>();
-        int mapR = HexGridGenerator.Instance.gridRadius;
-        
+        InitMap();
+        CellPosToWroldPos();
+        GetOuterRingCoordinates();
+    }
+
+    /// <summary>
+    /// 建立坐标点和世界坐标的映射
+    /// </summary>
+    private void CellPosToWroldPos()
+    {
+        dicCellPosToWorldPos = new Dictionary<Vector3Int, Vector3>();
+        int mapR = MapRadius;
+        Debug.Log("mapr:" + mapR);
         foreach (Vector3Int pos in HexGridGenerator.Instance.hexMap.Keys)
         {
-            if (pos.x==mapR ||pos.y==mapR||pos.z==mapR ) 
-            {
-                enemySpawnPoint.Add(pos,HexGridGenerator.Instance.hexMap[pos].transform.position);
-            }
-        }      
+
+            dicCellPosToWorldPos.Add(pos, HexGridGenerator.Instance.hexMap[pos].transform.position);
+
+        }
     }
 
-    [Button]
-    public void SpawnEnemy()
+
+
+
+
+    /// <summary>
+    /// 在指定坐标格刷怪
+    /// </summary>
+    /// <param name="mapCellPos"></param>
+    public void SpawnEnemy(Vector3Int mapCellPos)
     {
-        if (enemySpawnPoint==null)
+        if (dicCellPosToWorldPos == null)
         {
-            GetEnemySpawnPoint();
+            CellPosToWroldPos();
         }
 
-        Enemy e =  LeanPool.Spawn(prefab_Enemy).GetComponent<Enemy>();
+        Enemy e = LeanPool.Spawn(prefab_Enemy).GetComponent<Enemy>();
 
-        int index =  UnityEngine.Random.Range(0,enemySpawnPoint.Keys.Count);
-
-        Vector3Int pos = GetRandomSpawnKey();
+        Vector3Int pos = mapCellPos;
 
         e.hp = SetEnemyHp();
         e.Init();
         e.startPoint = pos;
-        e.transform.position = enemySpawnPoint[pos];
+        //pos(0,0,0)
+        e.transform.position = dicCellPosToWorldPos[pos];
         e.Move();
-
-        
-
     }
 
 
@@ -124,29 +148,80 @@ public class TheGame : MonoBehaviour
     }
 
 
+
     /// <summary>
-    /// 获取一个随机的生成位置
+    /// 获取最外层的六边形(用于默认位置刷怪)
     /// </summary>
     /// <returns></returns>
-    public Vector3Int GetRandomSpawnKey()
+    public List<Vector3Int> GetOuterRingCoordinates()
     {
-        if (enemySpawnPoint == null || enemySpawnPoint.Count == 0)
+      
+        // 获取当前生成的六边形地图
+        var hexMap = HexGridGenerator.Instance.hexMap;
+
+        foreach (Vector3Int pos in hexMap.Keys)
         {
-            Debug.LogWarning("enemySpawnPoint为空，返回Vector3Int.zero");
-            return Vector3Int.zero;
+            // 计算六边形到中心的距离
+            int distance = Mathf.Max(
+                Mathf.Abs(pos.x),
+                Mathf.Abs(pos.y),
+                Mathf.Abs(pos.z)
+            );
+
+            // 如果距离等于地图半径，则属于最外层
+            if (distance == MapRadius)
+            {
+                outerRing.Add(pos);
+            }
         }
 
-        // 将字典的键转换为列表
-        List<Vector3Int> keysList = new List<Vector3Int>(enemySpawnPoint.Keys);
-
-        // 随机选择一个索引
-        int randomIndex = UnityEngine.Random.Range(0, keysList.Count);
-
-        // 返回随机选择的键
-        return keysList[randomIndex];
+        return outerRing;
     }
 
 
+
+
+
+    /*
+    public int MapRadius = 24;
+    public int UnusableRadius = 12;
+    public int lockRadius = 7;
+    public int unlockRadius = 6;
+     */
+
+    [Button]
+    public void InitMap()
+    {
+        HexGridGenerator.Instance.GenerateHexGrid(MapRadius);
+        var hexMap = HexGridGenerator.Instance.hexMap;
+
+        foreach (Vector3Int pos in hexMap.Keys)
+        {
+            // 计算六边形到中心(0,0,0)的实际距离
+            int distance = Mathf.Max(
+                Mathf.Abs(pos.x),
+                Mathf.Abs(pos.y),
+                Mathf.Abs(pos.z)
+            );
+
+            MapCell cell = hexMap[pos].GetComponent<MapCell>();
+
+            if (distance > UnusableRadius)
+            {
+                cell.SetState(MapCellState.不可用);
+            }
+            else if (distance > lockRadius)
+            {
+                // 在解锁区但未锁定：红色
+                cell.SetState(MapCellState.锁定);
+            }
+            else
+            {
+                // 锁定区域：绿色
+                cell.SetState(MapCellState.已解锁);
+            }
+        }
+    }
 
 
 

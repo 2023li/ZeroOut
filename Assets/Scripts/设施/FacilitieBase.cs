@@ -2,21 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public  abstract class FacilitieBase : MonoBehaviour
 {
 
 
-  
-
-
-  
-
-  
-
-
-
-   
-
+    #region
     protected void OnMouseDown()
     {
         if (Input.GetMouseButtonDown(0))
@@ -49,5 +41,6 @@ public  abstract class FacilitieBase : MonoBehaviour
     {
 
     }
+    #endregion
 
 }
