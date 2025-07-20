@@ -37,24 +37,24 @@ public class GameInput : MonoBehaviour
         initialZ = transform.position.z;
         
         // 初始位置验证
-        ClampCameraPosition();
+       // ClampCameraPosition();
     }
 
     void Update()
     {
         HandleZoomInput();
-        HandleDragInput();
+        //HandleDragInput();
     }
 
     void LateUpdate()
     {
-        // 确保摄像机在边界内并保持Z轴稳定
-        ClampCameraPosition();
+       // // 确保摄像机在边界内并保持Z轴稳定
+       //// ClampCameraPosition();
         
-        // 始终固定Z轴位置
-        Vector3 pos = transform.position;
-        pos.z = initialZ;
-        transform.position = pos;
+       // // 始终固定Z轴位置
+       // Vector3 pos = transform.position;
+       // pos.z = initialZ;
+       // transform.position = pos;
     }
 
     private void HandleZoomInput()
@@ -83,7 +83,7 @@ public class GameInput : MonoBehaviour
             }
             
             // 缩放后重新计算边界
-            ClampCameraPosition();
+           // ClampCameraPosition();
         }
     }
 
