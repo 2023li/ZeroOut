@@ -7,6 +7,15 @@ using UnityEngine;
 public class TheGame : MonoBehaviour
 {
 
+    //当前选中的单元格坐标
+    public Vector3Int currentSelectedCell;
+    public void SetSelectedCell(Vector3Int selectedCell)
+    {
+        currentSelectedCell = selectedCell;
+    }
+
+
+
     [LabelText("实际地图半径")]
     public int MapRadius = 24;
     [LabelText("可用半径")]
@@ -100,7 +109,6 @@ public class TheGame : MonoBehaviour
     {
         dicCellPosToWorldPos = new Dictionary<Vector3Int, Vector3>();
         int mapR = MapRadius;
-        Debug.Log("mapr:" + mapR);
         foreach (Vector3Int pos in HexGridGenerator.Instance.hexMap.Keys)
         {
 

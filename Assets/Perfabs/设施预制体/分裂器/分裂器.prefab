@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8911944025388515451}
   - component: {fileID: 3572927886071706695}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RGO
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4145044874800743443}
   - component: {fileID: 9019869956229670268}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 2674921786892328592}
   - component: {fileID: 7488454709834345592}
   - component: {fileID: -5186727862318272899}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "\u5206\u88C2\u5668"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -342,7 +342,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2161602038559517641}
   - component: {fileID: 8978473827072535664}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -426,7 +426,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5078763514544041809}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "\u53D1\u5C04\u70B9-60"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -457,7 +457,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6357414558178078183}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "\u53D1\u5C04\u70B9+60"
   m_TagString: Untagged
   m_Icon: {fileID: 0}

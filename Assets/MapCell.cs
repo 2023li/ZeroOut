@@ -15,7 +15,7 @@ public class MapCell : MonoBehaviour
 
     [SerializeField] private SpriteRenderer spriteRenderer;
 
-    public Vector3 pos;
+    public Vector3Int pos;
     // Start is called before the first frame update
 
 
@@ -66,6 +66,18 @@ public class MapCell : MonoBehaviour
         }
 
     }
+
+
+    private void Start()
+    {
+        
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sortingOrder = -1;
+    }
+
+
+
+  
 
 
 }

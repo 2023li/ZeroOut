@@ -31,9 +31,12 @@ public abstract class DirFaciltie : FacilitieBase
 
     protected override void OnMouseButtonDown_0()
     {
+        base.OnMouseButtonDown_0(); 
         OnClickChangeDir();
 
     }
+
+   
 
     protected void OnClickChangeDir()
     {
@@ -77,6 +80,5 @@ public abstract class DirFaciltie : FacilitieBase
         
     }
 
-   
-
+    
 }

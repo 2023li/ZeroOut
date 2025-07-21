@@ -2,6 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum MouseKey
+{
+    鼠标左键,
+    鼠标右键
+}
+public interface IOnPlayerClick
+{
+
+    public void OnPlayerClick(MouseKey key);
+
+
+}
+
 public class GameInput : MonoBehaviour
 {
      [Header("Zoom Settings")]
@@ -45,19 +59,100 @@ public class GameInput : MonoBehaviour
         HandleZoomInput();
         HandleDragInput();
 
-      
+        HandleClickInput();
+
+
+
+
     }
 
-    void LateUpdate()
+
+
+    #region 射线检测
+
+    [Header("Click Settings")]
+    [Tooltip("只检测这些层上的物体")]
+    public LayerMask clickableLayers = ~0; // 默认检测所有层
+
+    
+
+    [Tooltip("调试模式：显示射线和命中点")]
+    public bool debugMode = false;
+
+    private void HandleClickInput()
     {
-       // // 确保摄像机在边界内并保持Z轴稳定
-       //// ClampCameraPosition();
         
-       // // 始终固定Z轴位置
-       // Vector3 pos = transform.position;
-       // pos.z = initialZ;
-       // transform.position = pos;
+      
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("左键射线检测");
+            HandleRaycast(MouseKey.鼠标左键);
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("右键键射线检测");
+            HandleRaycast(MouseKey.鼠标右键);
+        }
     }
+
+    private void HandleRaycast(MouseKey key)
+    {
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        RaycastHit2D hit2D;
+
+        // 3D物体检测（带层过滤）
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickableLayers))
+        {
+            if (debugMode)
+            {
+                Debug.Log($"3D Hit: {hit.collider.name} with {key}");
+                Debug.DrawLine(ray.origin, hit.point, Color.green, 1f);
+            }
+            TryTriggerClickable(hit.collider.gameObject, key);
+        }
+        // 2D物体检测（带层过滤）
+        else if ((hit2D = Physics2D.GetRayIntersection(ray, Mathf.Infinity, clickableLayers)).collider != null)
+        {
+            if (debugMode)
+            {
+                Debug.Log($"2D Hit: {hit2D.collider.name} with {key}");
+                Debug.DrawLine(ray.origin, hit2D.point, Color.blue, 1f);
+            }
+
+            TryTriggerClickable(hit2D.collider.gameObject, key);
+        }
+        else if (debugMode)
+        {
+            Debug.Log($"No valid object hit with {key}");
+            Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 1f);
+        }
+    }
+
+    private void TryTriggerClickable(GameObject target, MouseKey key)
+    {
+        IOnPlayerClick clickable = target.GetComponent<IOnPlayerClick>();
+        Debug.Log($"{target.name}");
+        if (clickable != null)
+        {
+            clickable.OnPlayerClick(key);
+            if (debugMode)
+                Debug.Log($"Triggered {key} on {target.name}");
+        }
+        else if (debugMode)
+        {
+            Debug.Log($"{target.name} has no IOnPlayerClick component");
+        }
+    }
+
+   
+    #endregion
+
+
+
+
 
     private void HandleZoomInput()
     {
@@ -98,7 +193,7 @@ public class GameInput : MonoBehaviour
 
         if (Input.GetMouseButton(0)) // 右键持续拖拽
         {
-            Debug.Log(1);
+          
             Vector3 currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 dragDelta = dragOrigin - currentPosition;
             transform.position += new Vector3(dragDelta.x, dragDelta.y, 0) * dragSpeed;

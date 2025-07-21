@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8911944025388515451}
   - component: {fileID: 3572927886071706695}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RGO
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4145044874800743443}
   - component: {fileID: 9019869956229670268}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 2322434446424468157}
   - component: {fileID: -8408748194239272312}
   - component: {fileID: 2674921786892328592}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "\u7C92\u5B50\u70AE"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -266,6 +266,7 @@ MonoBehaviour:
   rotateGO: {fileID: 8911944025388515451}
   blt: {fileID: 0}
   point: {fileID: 0}
+  currentAttackCD: 0
 --- !u!58 &2674921786892328592
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -310,7 +311,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6357414558178078183}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "\u53D1\u5C04\u70B9"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
